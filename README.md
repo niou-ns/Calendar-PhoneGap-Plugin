@@ -1,6 +1,9 @@
 # PhoneGap Calendar plugin 
 
 for iOS and Android, by [Eddy Verbruggen](http://www.x-services.nl)
+Edited by [Krzysztof Pintscher] (niou-ns)
+This version actually allows user (both Android and iOS) to modify events from calendar.
+(If you're using ngCordova, you should think about extending the original $cordovaCalendar service)
 
 
 [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=eddyverbruggen%40gmail%2ecom&lc=US&item_name=cordova%2dplugin%2dcalendar&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted)

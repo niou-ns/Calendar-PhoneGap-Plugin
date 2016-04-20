@@ -3,12 +3,13 @@
     xmlns="http://apache.org/cordova/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
     id="cordova-plugin-calendar"
-    version="4.4.7">
+    version="4.4.7.1">
 
   <name>Calendar</name>
 
   <description>
     This plugin allows you to manipulate the native calendar.
+    Edited by Krzysztof Pintscher
   </description>
 
   <author>Eddy Verbruggen</author>
@@ -17,9 +18,9 @@
 
   <keywords>Calendar, Agenda, Event</keywords>
 
-  <repo>https://github.com/EddyVerbruggen/Calendar-PhoneGap-Plugin.git</repo>
+  <repo>https://github.com/niou-ns/Calendar-PhoneGap-Plugin.git</repo>
 
-  <issue>https://github.com/EddyVerbruggen/Calendar-PhoneGap-Plugin/issues</issue>
+  <issue>https://github.com/niou-ns/Calendar-PhoneGap-Plugin/issues</issue>
 
   <engines>
     <engine name="cordova" version=">=3.0.0"/>

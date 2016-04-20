@@ -95,6 +95,9 @@ public abstract class AbstractCalendarAccessor {
           obj.put("endDate", sdf.format(new Date(Long.parseLong(this.endDate))));
         }
         obj.put("allday", this.allDay);
+        if (this.eventId != null) {
+          obj.put("eventId", this.eventId);
+        }        
         if (this.attendees != null) {
           JSONArray arr = new JSONArray();
           for (Attendee attendee : this.attendees) {
@@ -492,6 +495,54 @@ public abstract class AbstractCalendarAccessor {
       Log.e(LOG_TAG, "Creating reminders failed, ignoring since the event was created.", e);
     }
     return createdEventID;
+  }
+
+  public String updateEvent(Long eventId, Uri eventsUri, String title, long startTime, long endTime, String description,
+                            String location, Long firstReminderMinutes, Long secondReminderMinutes,
+                            String recurrence, int recurrenceInterval, Long recurrenceEndTime, Integer calendarId, String url) {
+    ContentResolver cr = this.cordova.getActivity().getContentResolver();
+    ContentValues values = new ContentValues();
+    final boolean allDayEvent = isAllDayEvent(new Date(startTime), new Date(endTime));
+    if (allDayEvent) {
+      //all day events must be in UTC time zone per Android specification, getOffset accounts for daylight savings time
+      values.put(Events.EVENT_TIMEZONE, "UTC");
+      values.put(Events.DTSTART, startTime + TimeZone.getDefault().getOffset(startTime));
+      values.put(Events.DTEND, endTime + TimeZone.getDefault().getOffset(endTime));
+    } else {
+      values.put(Events.EVENT_TIMEZONE, TimeZone.getDefault().getID());
+      values.put(Events.DTSTART, startTime);
+      values.put(Events.DTEND, endTime);
+    }
+    values.put(Events.ALL_DAY, allDayEvent ? 1 : 0);
+    values.put(Events.TITLE, title);
+    // there's no separate url field, so adding it to the notes
+    if (url != null) {
+      if (description == null) {
+        description = url;
+      } else {
+        description += " " + url;
+      }
+    }
+    values.put(Events.DESCRIPTION, description);
+    values.put(Events.HAS_ALARM, firstReminderMinutes > -1 || secondReminderMinutes > -1 ? 1 : 0);
+    values.put(Events.CALENDAR_ID, calendarId);
+    values.put(Events.EVENT_LOCATION, location);
+
+    if (recurrence != null) {
+      if (recurrenceEndTime == null) {
+        values.put(Events.RRULE, "FREQ=" + recurrence.toUpperCase() + ";INTERVAL=" + recurrenceInterval);
+      } else {
+        final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd'T'hhmmss'Z'");
+        values.put(Events.RRULE, "FREQ=" + recurrence.toUpperCase() + ";INTERVAL=" + recurrenceInterval + ";UNTIL=" + sdf.format(new Date(recurrenceEndTime)));
+      }
+    }
+
+    // runtime exceptions are dealt with by the caller
+    Uri updateUri = null;
+    updateUri = ContentUris.withAppendedId(Events.CONTENT_URI, eventId);
+    int rows = cr.update(updateUri, values, null, null);
+
+    return Long.toString(eventId);
   }
 
   public void createCalendar(String calendarName) {

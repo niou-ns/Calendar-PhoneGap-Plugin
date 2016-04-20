@@ -28,7 +28,7 @@
   } else { // we're on iOS 5 or older
     accessGranted = YES;
   }
-    
+
   if (accessGranted) {
     self.eventStore = eventStoreCandidate;
   }
@@ -159,7 +159,7 @@
     if (theEvent == nil) {
       NSArray *matchingEvents = [self findEKEventsWithTitle:title location:location notes:notes startDate:myStartDate endDate:myEndDate calendars:calendars];
 
-      if (matchingEvents.count == 1) {
+      if (matchingEvents.count == 1 ) {
 
         // Presume we have to have an exact match to modify it!
         // Need to load this event from an EKEventStore so we can edit it
@@ -180,22 +180,30 @@
         }
       }
 
-      if (ntitle) {
+      if(![ntitle isKindOfClass:[NSNull class]]){
         theEvent.title = ntitle;
       }
-      if (nlocation) {
+
+      if(![nlocation isKindOfClass:[NSNull class]]){
         theEvent.location = nlocation;
       }
-      if (nnotes) {
+
+      if(![nnotes isKindOfClass:[NSNull class]]){
         theEvent.notes = nnotes;
       }
-      if (nstartTime) {
+
+      if(![nstartTime isEqualToNumber: [NSNumber numberWithLong:0]]){
         NSTimeInterval _nstartInterval = [nstartTime doubleValue] / 1000; // strip millis
         theEvent.startDate = [NSDate dateWithTimeIntervalSince1970:_nstartInterval];
+      } else {
+        theEvent.startDate = myStartDate;
       }
-      if (nendTime) {
+
+      if(![nendTime isEqualToNumber: [NSNumber numberWithLong:0]]){
         NSTimeInterval _nendInterval = [nendTime doubleValue] / 1000; // strip millis
         theEvent.endDate = [NSDate dateWithTimeIntervalSince1970:_nendInterval];
+      } else {
+          theEvent.endDate = myEndDate;
       }
 
       // remove any existing alarms because there would be no other way to remove them
@@ -239,7 +247,7 @@
 
       // Now save the new details back to the store
       NSError *error = nil;
-      [self.eventStore saveEvent:theEvent span:EKSpanThisEvent error:&error];
+        [self.eventStore saveEvent:theEvent span:EKSpanThisEvent commit:YES error:&error];
 
 
       // Check error code + return result
