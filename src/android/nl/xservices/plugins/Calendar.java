@@ -394,7 +394,7 @@ public class Calendar extends CordovaPlugin {
     }
   }
 
-  private void deleteEvent(JSONArray args) {
+  private void deleteEventById(JSONArray args) {
     if (args.length() == 0) {
       System.err.println("Exception: No Arguments passed");
       return;
