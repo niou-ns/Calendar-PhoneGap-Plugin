@@ -97,7 +97,7 @@ public abstract class AbstractCalendarAccessor {
         obj.put("allday", this.allDay);
         if (this.eventId != null) {
           obj.put("eventId", this.eventId);
-        }        
+        }
         if (this.attendees != null) {
           JSONArray arr = new JSONArray();
           for (Attendee attendee : this.attendees) {
@@ -428,6 +428,13 @@ public abstract class AbstractCalendarAccessor {
       }
     }
     return nrDeletedRecords > 0;
+  }
+
+  public boolean deleteEventById(Uri eventsUri, long id) {
+    ContentResolver resolver = this.cordova.getActivity().getApplicationContext().getContentResolver();
+    deleteUri = ContentUris.withAppendedId(eventsUri, id);
+    int rows = resolver.delete(eventUri, null, null);
+    return rows > 0;
   }
 
   public String createEvent(Uri eventsUri, String title, long startTime, long endTime, String description,

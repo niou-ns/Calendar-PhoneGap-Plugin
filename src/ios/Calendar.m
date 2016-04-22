@@ -701,6 +701,17 @@
   }
 }
 
+- (void) deleteEventById:(CDVInvokedUrlCommand*)command {
+  EKCalendar* calendar = self.eventStore.defaultCalendarForNewEvents;
+
+  if (calendar == nil) {
+    CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"No default calendar found. Is access to the Calendar blocked for this app?"];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+  } else {
+    [self deleteEventFromCalendar:command calendar: calendar];
+  }
+}
+
 - (void) findAllEventsInNamedCalendar:(CDVInvokedUrlCommand*)command {
   NSDictionary* options = [command.arguments objectAtIndex:0];
   NSString* calendarName = [options objectForKey:@"calendarName"];
