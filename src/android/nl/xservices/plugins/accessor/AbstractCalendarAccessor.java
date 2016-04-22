@@ -432,7 +432,7 @@ public abstract class AbstractCalendarAccessor {
 
   public boolean deleteEventById(Uri eventsUri, long id) {
     ContentResolver resolver = this.cordova.getActivity().getApplicationContext().getContentResolver();
-    deleteUri = ContentUris.withAppendedId(eventsUri, id);
+    Uri deleteUri = ContentUris.withAppendedId(eventsUri, id);
     int rows = resolver.delete(eventUri, null, null);
     return rows > 0;
   }
